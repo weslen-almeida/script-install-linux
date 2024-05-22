@@ -1,0 +1,14 @@
+linux-headers-$(uname -r)
+gnome-disk-utility
+code
+git
+postman
+dbeaver
+inkscape
+gimp
+steam
+discord
+gparted
+gnome-boxes
+tilix
+zsh

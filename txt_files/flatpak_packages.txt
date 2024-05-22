@@ -1,0 +1,6 @@
+org.libretro.RetroArch
+com.heroicgameslauncher.hgl
+com.google.AndroidStudio
+md.obsidian.Obsidian
+com.getpostman.Postman
+io.dbeaver.DBeaverCommunity
