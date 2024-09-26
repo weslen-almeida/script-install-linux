@@ -129,6 +129,40 @@ construp_git(){
     start_function   
 }
 
+# Function clone repository construp
+config-git-debian(){
+
+    echo "Install git"
+    sleep 1
+    sudo apt install git
+
+    echo "Config username and email git"
+    sleep 1
+    git config --global user.name "Weslen Almeida"
+    git config --global user.email "weslengomes@gmail.com"
+
+    echo "Gnerate ssh-key"
+    sleep 1
+    ssh-keygen -t ed25519 -C "weslengomes@gmail.com"
+
+    echo "Adding ssh to the ssh-agent"
+    sleep 1
+    eval "$(ssh-agent -s)"
+
+    echo "Adding ssh private ssh-agent"
+    sleep 1
+    ssh-add ~/.ssh/id_ed25519
+    
+    echo "Copy key and Add key in github page"
+    echo "-----------------------------------"
+    sleep 1
+    cat ~/.ssh/id_ed25519.pub
+ 
+    echo "Success"
+    
+    start_function   
+}
+
 install_docker_debian(){
 
     echo "Install Prerequisites"
@@ -171,7 +205,8 @@ echo "5 - FLATPAK - Install Flatpak Packages"
 echo "6 - Add user to sudoers file"
 echo "7 - Clone Repository Construp"
 echo "8 - Install Docker"
-echo "9 - Close application"
+echo "9 - Install and config git"
+echo "10 - Close application"
 echo
 
 # It receives the user's choice and loads the files in .txt format.
@@ -196,12 +231,14 @@ do
     
     6) add_user_sudoers;;
 
-    7) flatpak_programs="$file_directory/txt_files/construp_repository.txt"
+    7) construp_repository="$file_directory/txt_files/construp_repository.txt"
         construp_git;;
     
     8) install_docker_debian;; 
     
-    9) exit
+    9) config-git-debian;;
+
+    10) exit
 
   esac
 done
