@@ -192,6 +192,26 @@ install_docker_debian(){
     start_function   
 }
 
+install_nvm_puro_and_flutter(){
+
+    echo "Install Puro (Flutter)"
+    sleep 1
+    curl -o- https://puro.dev/install.sh | PURO_VERSION="1.4.6" bash
+
+    sleep 1
+    echo "Create new environment from a release channel"
+    puro create stable_flutter stable
+
+    echo "install nvm"
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+    export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+    source ~/.bashrc
+    sleep 1
+
+    start_function   
+}
+
 # Shows to user the packages installation options. 
 start_function(){
 echo
@@ -206,7 +226,8 @@ echo "6 - Add user to sudoers file"
 echo "7 - Clone Repository Construp"
 echo "8 - Install Docker"
 echo "9 - Install and config git"
-echo "10 - Close application"
+echo "10 - Install FVM, PURO AND FLUTTER"
+echo "11 - Close application"
 echo
 
 # It receives the user's choice and loads the files in .txt format.
@@ -238,7 +259,9 @@ do
     
     9) config-git-debian;;
 
-    10) exit
+    10) install_nvm_puro_and_flutter;;
+
+    11) exit
 
   esac
 done
