@@ -6,7 +6,7 @@
 file_directory=$(dirname -- $(readlink -fn -- "$0"))
 
 # Detect Operational System in use.
-distro=$(lsb_release -i | cut -f 2-)
+# distro=$(lsb_release -i | cut -f 2-)
 #USER=$(ps -o user= -p $$ | awk '{print $1}')
 
 add_user_sudoers(){
@@ -100,12 +100,31 @@ apt_packages(){ #OK
 
     echo "This option installs a collection of general and essential packages."
     sleep 1
-    #sudo apt update
+
     while IFS= read -r line || [[ -n "$line" ]]; do
         sudo apt install $line -y
     done < "$apt_programs"
     echo
     echo "Deb packages have been installed."
+    start_function   
+}
+
+# Function responsible for install rpm applications through dnf. 
+# Reading the file and iterating line by line to install packages.
+rpm_packages(){ #OK
+
+    echo "This option installs a collection of general and essential packages."
+    sleep 1
+
+    while IFS= read -r line || [[ -n "$line" ]]; do
+        sudo dnf install $line -y
+    done < "$rpm_programs"
+    echo
+    echo "Deb packages have been installed."
+
+    echo "Init instal Docker"
+    install_docker_fedora;
+
     start_function   
 }
 
@@ -130,11 +149,7 @@ construp_git(){
 }
 
 # Function clone repository construp
-config-git-debian(){
-
-    echo "Install git"
-    sleep 1
-    sudo apt install git
+config-git(){
 
     echo "Config username and email git"
     sleep 1
@@ -192,6 +207,26 @@ install_docker_debian(){
     start_function   
 }
 
+install_docker_fedora(){
+    echo "Install Prerequisites"
+    sleep 1
+    sudo dnf install dnf-plugins-core
+
+    echo "To add the docker-ce repository"
+    sleep 1
+    sudo dnf config-manager addrepo --from-repofile="https://download.docker.com/linux/fedora/docker-ce.repo"
+
+    echo "Install Docker"
+    sleep 1
+    sudo dnf install docker-ce docker-ce-cli containerd.io
+
+    echo "Start Docker service and start in boot system"
+    sleep 1
+    sudo systemctl enable docker && sudo systemctl start docker
+
+    start_function
+}
+
 install_nvm_puro_and_flutter(){
 
     echo "Install Puro (Flutter)"
@@ -225,9 +260,10 @@ echo "5 - FLATPAK - Install Flatpak Packages"
 echo "6 - Add user to sudoers file"
 echo "7 - Clone Repository Construp"
 echo "8 - Install Docker"
-echo "9 - Install and config git"
+echo "9 - Config git"
 echo "10 - Install FVM, PURO AND FLUTTER"
-echo "11 - Close application"
+echo "11 - Fedora - General and Essential Packages"
+echo "12 - Close application"
 echo
 
 # It receives the user's choice and loads the files in .txt format.
@@ -257,11 +293,14 @@ do
     
     8) install_docker_debian;; 
     
-    9) config-git-debian;;
+    9) config-git;;
 
     10) install_nvm_puro_and_flutter;;
 
-    11) exit
+    11) rpm_programs="$file_directory/txt_files/rpm_programs.txt"
+        rpm_packages;;
+
+    12) exit
 
   esac
 done
