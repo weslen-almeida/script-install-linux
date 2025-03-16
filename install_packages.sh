@@ -227,7 +227,7 @@ install_docker_fedora(){
     start_function
 }
 
-install_nvm_puro_and_flutter(){
+install_puro_flutter(){
 
     echo "Install Puro (Flutter)"
     sleep 1
@@ -236,6 +236,36 @@ install_nvm_puro_and_flutter(){
     sleep 1
     echo "Create new environment from a release channel"
     puro create stable_flutter stable
+
+    start_function   
+}
+
+install_fvm_flutter(){
+    echo "Install Homebrew"
+    sleep 1
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    echo >> /home/weslen/.bashrc
+    echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/weslen/.bashrc
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    
+    source ~/.bashrc 
+    sleep 1
+
+    echo "Install fvm (Flutter)"
+    sleep 1
+    brew tap leoafarias/fvm
+    brew install fvm
+    
+    echo "Install flutter stable"
+    sleep 1
+    fvm install stable
+    fvm use statble
+
+
+    start_function   
+}
+
+install_nvm(){
 
     echo "install nvm"
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
@@ -261,9 +291,11 @@ echo "6 - Add user to sudoers file"
 echo "7 - Clone Repository Construp"
 echo "8 - Install Docker"
 echo "9 - Config git"
-echo "10 - Install FVM, PURO AND FLUTTER"
-echo "11 - Fedora - General and Essential Packages"
-echo "12 - Close application"
+echo "10 - Install PURO FLUTTER"
+echo "11 - Install FVM FLUTTER"
+echo "12 - Install NVM NODE"
+echo "13 - Fedora - General and Essential Packages"
+echo "14 - Close application"
 echo
 
 # It receives the user's choice and loads the files in .txt format.
@@ -295,12 +327,16 @@ do
     
     9) config-git;;
 
-    10) install_nvm_puro_and_flutter;;
+    10) install_puro_flutter;;
+    
+    11) install_fvm_flutter;;
+    
+    12) install_nvm;;
 
-    11) rpm_programs="$file_directory/txt_files/rpm_programs.txt"
+    13) rpm_programs="$file_directory/txt_files/rpm_programs.txt"
         rpm_packages;;
 
-    12) exit
+    14) exit
 
   esac
 done
