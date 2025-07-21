@@ -4,3 +4,8 @@ web-construp-cms.git
 construp-web.git
 api-construp-cms.git
 docs.git
+ecommerce-nginx.git
+serve-up-api.git
+serve-up-app.git
+serve-up-admin.git
+aws-ec2-tools.git
