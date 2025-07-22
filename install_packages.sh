@@ -182,27 +182,33 @@ install_docker_debian(){
 
     echo "Install Prerequisites"
     sleep 1
-    sudo apt install apt-transport-https ca-certificates curl
+    sudo sudo apt install ca-certificates curl gnupg lsb-release -y
 
     echo "Add Docker’s GPG Repo Key"
     sleep 1
-    sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+    sudo mkdir -p /etc/apt/keyrings
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 
     echo "Add the Docker Repo to Pop!_OS 22.04"
     sleep 1
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-    sudo apt update
+    echo \
+    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
+    https://download.docker.com/linux/ubuntu \
+    $(lsb_release -cs) stable" | \
+    sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
     echo "Install Docker on Pop!_OS 22.04 LTS"
-    sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-    
+    sudo apt update
+    sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+
     sleep 1
     echo "Active docker in startup system"
     sudo systemctl is-active docker
     
     sleep 1
     echo "user sudo docker"
-    sudo usermod -aG docker ${USER}
+    sudo usermod -aG docker $USER
+    newgrp docker
 
     start_function   
 }
@@ -289,7 +295,7 @@ echo "4  - SNAP - Install Snap Packages"
 echo "5 - FLATPAK - Install Flatpak Packages"
 echo "6 - Add user to sudoers file"
 echo "7 - Clone Repository Construp"
-echo "8 - Install Docker"
+echo "8 - Install Docker Debian"
 echo "9 - Config git"
 echo "10 - Install PURO FLUTTER"
 echo "11 - Install FVM FLUTTER"
